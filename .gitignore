@@ -2,9 +2,6 @@
 Dataset Livrable */
 leyenda_livrable1/converted/
 
-# Trained models
-*.keras
-*.h5
 
 # Python / Jupyter
 __pycache__/
