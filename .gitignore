@@ -1,0 +1,14 @@
+# Datasets (too large for GitHub)
+Dataset Livrable */
+leyenda_livrable1/converted/
+
+# Trained models
+*.keras
+*.h5
+
+# Python / Jupyter
+__pycache__/
+.ipynb_checkpoints/
+.venv/
+venv/
+.env
