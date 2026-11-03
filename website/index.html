@@ -1,0 +1,120 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Leyenda - AI-powered image classification, denoising and captioning.">
+    <title>Leyenda | AI Image Processing</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="staticC.css">
+</head>
+<body>
+    <main id="home">
+        <section class="hero">
+            <h1>Project Data Science</h1>
+            <p class="hero-description">Team: Haytam El hilali / Felipe Lobos / Fernanda Gentil.</p>
+        </section>
+
+        <section class="workspace" id="upload-section">
+            <div class="section-heading">
+                <span class="step-label">Choose an image to start.</span>
+                <h2>Upload your image</h2>
+                <p></p>
+            </div>
+
+            <div class="upload-container" id="drop-zone">
+                <input type="file" id="image-input" accept="image/png, image/jpeg, image/jpg" hidden>
+                <p id="file-error" class="error-message" hidden>
+                    Invalid file format. Please upload an image in PNG, JPG or JPEG.
+                </p>
+
+                <div class="upload-content" id="upload-content">
+                    <button type="button" class="browse-button" id="browse-button">Browse files</button>
+                    <span class="upload-formats">Supported formats: JPG, JPEG and PNG</span>
+                </div>
+
+                <div class="image-preview" id="image-preview" hidden>
+                    <div class="preview-image-container">
+                        <img src="" alt="Selected image preview" id="preview-image">
+                    </div>
+                    <div class="preview-information">
+                        <div class="preview-file-info">
+                            <i class="fa-regular fa-image"></i>
+                            <div>
+                                <strong id="file-name">Image name</strong>
+                                <span id="file-size">0 KB</span>
+                            </div>
+                        </div>
+                        <button type="button" class="remove-image-button" id="remove-image-button" aria-label="Remove selected image">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="caption-actions" id="caption-actions" hidden>
+                <button type="button" class="browse-button" id="generate-caption-button">Generate caption</button>
+            </div>
+
+            <div class="caption-result" id="caption-result" hidden>
+                <p id="caption-text">The caption will appear here.</p>
+            </div>
+        </section>
+
+        <section class="workflow-section" id="workflow">
+            <div class="workflow-heading">
+                <h2>About Leyenda</h2>
+                <p>Explore the three main deliverables of our Data Science project.</p>
+            </div>
+
+            <div class="workflow-grid">
+                <article class="workflow-card">
+                    <span class="workflow-number">01</span>
+                    <div class="workflow-icon">
+                        <i class="fa-solid fa-image"></i>
+                    </div>
+                    <h3>Binary Classification</h3>
+                    <p>Distinguish photographs from non-photographic images, such as diagrams, drawings and scanned documents.</p>
+                </article>
+
+                <article class="workflow-card">
+                    <span class="workflow-number">02</span>
+                    <div class="workflow-icon">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i>
+                    </div>
+                    <h3>Image Denoising</h3>
+                    <p>Reduce noise in images and improve their visual quality using an autoencoder.</p>
+                </article>
+
+                <article class="workflow-card">
+                    <span class="workflow-number">03</span>
+                    <div class="workflow-icon">
+                        <i class="fa-solid fa-comment-dots"></i>
+                    </div>
+                    <h3>Image Captioning</h3>
+                    <p>Generate natural-language descriptions of photographs using a neural network.</p>
+                </article>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-container">
+            <a href="#home" class="logo footer-logo">
+                <span class="logo-icon">
+                    <i class="fa-solid fa-aperture"></i>
+                </span>
+                <span class="logo-name">CESI Lille</span>
+            </a>
+            <p>Professor: SADEGHIAN BROUJENY Roozbeh and MHABHBI Nizar.</p>
+            <span class="copyright">Academic Project.</span>
+        </div>
+    </footer>
+
+    <script src="staticJ.js"></script>
+</body>
+</html>

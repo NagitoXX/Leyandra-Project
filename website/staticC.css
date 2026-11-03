@@ -1,0 +1,448 @@
+
+:root {
+    --primary: #3478D4;
+    --primary-dark: #2865B8;
+    --primary-light: #EAF3FF;
+    --background: #FFFFFF;
+    --surface: #FFFFFF;
+    --surface-soft: #F7F9FC;
+    --text-primary: #25243A;
+    --text-secondary: #77768B;
+    --border: #E5EAF1;
+    --danger: #DC5555;
+    --danger-light: #FFF0F0;
+    --shadow: 0 8px 30px rgba(38, 32, 75, 0.05);
+    --radius-sm: 10px;
+    --radius-md: 16px;
+    --radius-lg: 22px;
+    --transition: all 0.25s ease;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--background);
+    color: var(--text-primary);
+    line-height: 1.6;
+}
+
+button,
+input {
+    font: inherit;
+}
+
+button {
+    cursor: pointer;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+[hidden] {
+    display: none !important;
+}
+
+/* HERO */
+.hero {
+    max-width: 850px;
+    margin: auto;
+    padding: 24px 24px 18px;
+    text-align: center;
+}
+
+.hero h1 {
+    font-family: 'Manrope', sans-serif;
+    font-size: clamp(30px, 5vw, 42px);
+    line-height: 1.2;
+    letter-spacing: -1.5px;
+    font-weight: 800;
+}
+
+.hero-description {
+    max-width: 570px;
+    margin: 8px auto 0;
+    color: var(--text-secondary);
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+/* WORKSPACE AND SECTION HEADINGS */
+.workspace {
+    max-width: 1040px;
+    margin: auto;
+    padding: 12px 24px 28px;
+}
+
+.section-heading {
+    margin-bottom: 12px;
+}
+
+.step-label {
+    display: block;
+    color: var(--primary);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    margin-bottom: 4px;
+}
+
+.section-heading h2 {
+    font-family: 'Manrope', sans-serif;
+    font-size: 23px;
+    font-weight: 700;
+    letter-spacing: -0.6px;
+}
+
+.section-heading p {
+    color: var(--text-secondary);
+    font-size: 13px;
+    margin-top: 3px;
+}
+
+/* UPLOAD AREA */
+.upload-container {
+    min-height: 70px;
+    border: 1.5px dashed var(--border);
+    background: var(--surface-soft);
+    border-radius: var(--radius-lg);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition);
+    overflow: hidden;
+}
+
+.upload-container:hover,
+.upload-container.drag-over {
+    border-color: var(--primary);
+    background: var(--primary-light);
+}
+
+.upload-content {
+    padding: 14px 20px;
+    text-align: center;
+}
+
+.browse-button {
+    border: none;
+    background: var(--primary);
+    color: white;
+    padding: 10px 24px;
+    border-radius: var(--radius-sm);
+    font-size: 13px;
+    font-weight: 600;
+    transition: var(--transition);
+}
+
+.browse-button:hover {
+    background: var(--primary-dark);
+    transform: translateY(-2px);
+}
+
+.upload-formats {
+    display: block;
+    margin-top: 8px;
+    color: var(--text-secondary);
+    font-size: 11px;
+}
+
+/* IMAGE PREVIEW */
+.image-preview {
+    width: 100%;
+    padding: 16px;
+}
+
+.preview-image-container {
+    height: 260px;
+    background: var(--surface-soft);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.preview-image-container img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+.preview-information {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 12px;
+}
+
+.preview-file-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+}
+
+.preview-file-info > i {
+    color: var(--primary);
+    font-size: 22px;
+}
+
+.preview-file-info strong {
+    display: block;
+    font-size: 13px;
+    word-break: break-word;
+}
+
+.preview-file-info span {
+    display: block;
+    color: var(--text-secondary);
+    font-size: 11px;
+}
+
+.remove-image-button {
+    flex-shrink: 0;
+    border: none;
+    background: var(--danger-light);
+    color: var(--danger);
+    width: 35px;
+    height: 35px;
+    border-radius: 9px;
+    transition: var(--transition);
+}
+
+.remove-image-button:hover {
+    background: var(--danger);
+    color: white;
+}
+
+/* ERROR MESSAGE */
+.error-message {
+    width: 100%;
+    padding: 12px 16px;
+    background: var(--danger-light);
+    color: var(--danger);
+    border-radius: var(--radius-sm);
+    font-size: 13px;
+    text-align: center;
+}
+
+/* WORKFLOW */
+.workflow-section {
+    background: var(--surface-soft);
+    padding: 28px 24px;
+}
+
+.workflow-heading {
+    text-align: center;
+    max-width: 650px;
+    margin: auto;
+}
+
+.workflow-heading h2 {
+    font-family: 'Manrope', sans-serif;
+    font-size: 27px;
+    line-height: 1.3;
+    letter-spacing: -0.8px;
+}
+
+.workflow-heading p {
+    color: var(--text-secondary);
+    font-size: 13px;
+    margin-top: 6px;
+}
+
+.workflow-grid {
+    max-width: 1040px;
+    margin: 18px auto 0;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+}
+
+.workflow-card {
+    position: relative;
+    padding: 22px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    transition: var(--transition);
+}
+
+.workflow-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow);
+}
+
+.workflow-number {
+    position: absolute;
+    right: 18px;
+    top: 14px;
+    color: #DCE8F7;
+    font-family: 'Manrope', sans-serif;
+    font-size: 25px;
+    font-weight: 800;
+}
+
+.workflow-icon {
+    width: 44px;
+    height: 44px;
+    background: var(--primary-light);
+    color: var(--primary);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    margin-bottom: 14px;
+}
+
+.workflow-card h3 {
+    font-family: 'Manrope', sans-serif;
+    font-size: 15px;
+    margin-bottom: 7px;
+}
+
+.workflow-card p {
+    color: var(--text-secondary);
+    font-size: 12px;
+    line-height: 1.7;
+}
+
+/* FOOTER */
+.footer {
+    border-top: 1px solid var(--border);
+    padding: 14px 24px;
+}
+
+.footer-container {
+    max-width: 1180px;
+    margin: auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.logo-icon {
+    width: 30px;
+    height: 30px;
+    border-radius: 9px;
+    background: var(--primary-light);
+    color: var(--primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+}
+
+.logo-name {
+    font-family: 'Manrope', sans-serif;
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+}
+
+.footer-container > p,
+.copyright {
+    color: var(--text-secondary);
+    font-size: 11px;
+}
+
+/* RESPONSIVE */
+@media (max-width: 850px) {
+    .workflow-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .workflow-card:last-child {
+        grid-column: 1 / -1;
+    }
+}
+
+@media (max-width: 600px) {
+    .hero {
+        padding: 22px 16px 14px;
+    }
+
+    .hero h1 {
+        font-size: 30px;
+        letter-spacing: -1px;
+    }
+
+    .hero-description {
+        font-size: 12px;
+    }
+
+    .workspace {
+        padding: 10px 16px 24px;
+    }
+
+    .section-heading h2 {
+        font-size: 21px;
+    }
+
+    .workflow-section {
+        padding: 24px 16px;
+    }
+
+    .workflow-heading h2 {
+        font-size: 24px;
+    }
+
+    .workflow-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .workflow-card:last-child {
+        grid-column: auto;
+    }
+
+    .preview-image-container {
+        height: 220px;
+    }
+
+    .footer-container {
+        flex-direction: column;
+        text-align: center;
+        gap: 10px;
+    }
+}
+#caption-actions {
+    display: flex;
+    justify-content: center;
+    margin-top: 16px;
+}
+
+#caption-result {
+    margin: 16px auto 0;
+    max-width: 640px;
+    padding: 14px 18px;
+    border-radius: 10px;
+    background: rgba(127, 127, 127, 0.12);
+    border: 1px solid rgba(127, 127, 127, 0.25);
+    text-align: center;
+}
+
+#caption-result p {
+    margin: 0;
+    line-height: 1.5;
+}
