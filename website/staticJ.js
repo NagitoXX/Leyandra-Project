@@ -17,7 +17,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const captionText = document.getElementById('caption-text');
 
     // Cambia esta URL cuando el backend corra en otra máquina.
-    const API_BASE_URL = 'http://127.0.0.1:8000';
+    const API_BASE_URL = window.location.hostname
+    ? `http://${window.location.hostname}:8000`
+    : 'http://127.0.0.1:8000';
 
     const allowedTypes = ['image/jpeg', 'image/png'];
     const allowedExtensions = ['jpg', 'jpeg', 'png'];
