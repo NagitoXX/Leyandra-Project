@@ -14,8 +14,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const removeButton = document.getElementById('remove-image-button');
     const fileError = document.getElementById('file-error');
 
-    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
-    const allowedExtensions = ['jpg', 'jpeg', 'png', 'webp'];
+    const allowedTypes = ['image/jpeg', 'image/png'];
+    const allowedExtensions = ['jpg', 'jpeg', 'png'];
     let currentImageUrl = null;
 
     if (
