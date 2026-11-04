@@ -1,0 +1,21 @@
+{
+  "expo": {
+    "name": "Leyenda Demo",
+    "slug": "leyenda-demo",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "automatic",
+    "ios": {
+      "supportsTablet": true
+    },
+    "plugins": [
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "The app opens your photos so you can choose one to caption.",
+          "cameraPermission": "The app uses the camera so you can take a photo to caption."
+        }
+      ]
+    ]
+  }
+}
