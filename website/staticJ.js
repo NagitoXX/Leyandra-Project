@@ -1,29 +1,23 @@
-from pathlib import Path
-
-js = """// LEYENDA - Image upload and preview
-
 document.addEventListener('DOMContentLoaded', () => {
     const fileInput = document.getElementById('image-input');
     const browseButton = document.getElementById('browse-button');
     const dropZone = document.getElementById('drop-zone');
     const uploadContent = document.getElementById('upload-content');
     const imagePreview = document.getElementById('image-preview');
-    const previewImage = document.getElementById('preview-image');
-    const fileName = document.getElementById('file-name');
-    const fileSize = document.getElementById('file-size');
     const removeButton = document.getElementById('remove-image-button');
     const fileError = document.getElementById('file-error');
 
     const allowedTypes = ['image/jpeg', 'image/png'];
     const allowedExtensions = ['jpg', 'jpeg', 'png'];
-    let currentImageUrl = null;
+    const maxImages = 10;
+
+    let selectedImages = [];
 
     if (
-        !fileInput || !browseButton || !dropZone || !uploadContent ||
-        !imagePreview || !previewImage || !fileName || !fileSize ||
-        !removeButton || !fileError
+        !fileInput || !browseButton || !dropZone ||
+        !uploadContent || !imagePreview || !fileError
     ) {
-        console.error('Leyenda: one or more upload elements were not found in index.html.');
+        console.error('Leyenda: upload elements not found.');
         return;
     }
 
@@ -45,72 +39,159 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function isSupportedImage(file) {
         const extension = file.name.split('.').pop().toLowerCase();
-        return allowedTypes.includes(file.type) || allowedExtensions.includes(extension);
+
+        return allowedTypes.includes(file.type) &&
+               allowedExtensions.includes(extension);
     }
 
-    function displayImage(file) {
+    function addImages(files) {
         clearError();
 
-        if (!file) return;
+        const incomingFiles = Array.from(files);
 
-        if (!isSupportedImage(file)) {
-            showError('Unsupported file format. Please choose a JPG, JPEG, PNG or WEBP image.');
+        if (selectedImages.length + incomingFiles.length > maxImages) {
+            showError(
+                `You can upload a maximum of ${maxImages} images at a time. ` +
+                `You currently have ${selectedImages.length} image(s) selected.`
+            );
             return;
         }
 
-        if (currentImageUrl) {
-            URL.revokeObjectURL(currentImageUrl);
+        const invalidFiles = incomingFiles.filter(file => !isSupportedImage(file));
+
+        if (invalidFiles.length > 0) {
+            showError('Invalid file format. Please upload PNG, JPG or JPEG images only.');
+            return;
         }
 
-        currentImageUrl = URL.createObjectURL(file);
-        previewImage.src = currentImageUrl;
-        previewImage.alt = `Preview of ${file.name}`;
-        fileName.textContent = file.name;
-        fileSize.textContent = formatFileSize(file.size);
+        incomingFiles.forEach(file => {
+            selectedImages.push({
+                file: file,
+                url: URL.createObjectURL(file)
+            });
+        });
+
+        renderImages();
+    }
+
+    function renderImages() {
+        imagePreview.innerHTML = '';
+
+        if (selectedImages.length === 0) {
+            imagePreview.hidden = true;
+            uploadContent.hidden = false;
+            return;
+        }
 
         uploadContent.hidden = true;
         imagePreview.hidden = false;
+
+        const counter = document.createElement('p');
+        counter.className = 'image-counter';
+        counter.textContent = `${selectedImages.length} / ${maxImages} images selected`;
+        imagePreview.appendChild(counter);
+
+        const grid = document.createElement('div');
+        grid.className = 'image-preview-grid';
+
+        selectedImages.forEach((image, index) => {
+            const card = document.createElement('div');
+            card.className = 'preview-card';
+
+            const img = document.createElement('img');
+            img.src = image.url;
+            img.alt = `Preview of ${image.file.name}`;
+
+            const info = document.createElement('div');
+            info.className = 'preview-information';
+
+            const details = document.createElement('div');
+            details.className = 'preview-file-info';
+
+            const name = document.createElement('strong');
+            name.textContent = image.file.name;
+
+            const size = document.createElement('span');
+            size.textContent = formatFileSize(image.file.size);
+
+            const remove = document.createElement('button');
+            remove.type = 'button';
+            remove.className = 'remove-image-button';
+            remove.textContent = '×';
+            remove.setAttribute('aria-label', `Remove ${image.file.name}`);
+
+            remove.addEventListener('click', () => {
+                URL.revokeObjectURL(selectedImages[index].url);
+                selectedImages.splice(index, 1);
+                clearError();
+                renderImages();
+            });
+
+            details.append(name, size);
+            info.append(details, remove);
+            card.append(img, info);
+            grid.appendChild(card);
+        });
+
+        imagePreview.appendChild(grid);
+
+        const addMoreButton = document.createElement('button');
+        addMoreButton.type = 'button';
+        addMoreButton.className = 'add-more-card';
+
+        const addMoreIcon = document.createElement('span');
+        addMoreIcon.className = 'add-more-icon';
+        addMoreIcon.textContent = '+';
+
+        const addMoreText = document.createElement('span');
+        addMoreText.textContent = 'Add more images';
+
+        addMoreButton.append(addMoreIcon, addMoreText);
+
+        addMoreButton.disabled = selectedImages.length >= maxImages;
+
+        addMoreButton.addEventListener('click', () => {
+            fileInput.click();
+        });
+
+grid.appendChild(addMoreButton);
+
+        imagePreview.appendChild(addMoreButton);
     }
 
     function resetUpload() {
-        if (currentImageUrl) {
-            URL.revokeObjectURL(currentImageUrl);
-            currentImageUrl = null;
-        }
-
+        selectedImages.forEach(image => URL.revokeObjectURL(image.url));
+        selectedImages = [];
         fileInput.value = '';
-        previewImage.removeAttribute('src');
-        previewImage.alt = 'Selected image preview';
-        fileName.textContent = 'Image name';
-        fileSize.textContent = '0 KB';
-
-        imagePreview.hidden = true;
-        uploadContent.hidden = false;
         clearError();
-        dropZone.classList.remove('drag-over');
+        renderImages();
     }
 
     browseButton.addEventListener('click', () => {
         fileInput.click();
     });
 
-    fileInput.addEventListener('change', (event) => {
-        const file = event.target.files[0];
-        displayImage(file);
+    fileInput.addEventListener('change', event => {
+        addImages(event.target.files);
+
+        // Allows selecting the same file again later.
+        fileInput.value = '';
     });
 
-    removeButton.addEventListener('click', resetUpload);
+    if (removeButton) {
+        removeButton.addEventListener('click', resetUpload);
+    }
 
-    ['dragenter', 'dragover'].forEach((eventName) => {
-        dropZone.addEventListener(eventName, (event) => {
+    ['dragenter', 'dragover'].forEach(eventName => {
+        dropZone.addEventListener(eventName, event => {
             event.preventDefault();
             event.stopPropagation();
             dropZone.classList.add('drag-over');
         });
     });
 
-    ['dragleave', 'dragend'].forEach((eventName) => {
-        dropZone.addEventListener(eventName, (event) => {
+    ['dragleave', 'dragend'].forEach(eventName => {
+        dropZone.addEventListener(eventName, event => {
             event.preventDefault();
             event.stopPropagation();
 
@@ -120,26 +201,17 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    dropZone.addEventListener('drop', (event) => {
+    dropZone.addEventListener('drop', event => {
         event.preventDefault();
         event.stopPropagation();
         dropZone.classList.remove('drag-over');
 
-        const file = event.dataTransfer.files[0];
-        if (!file) return;
-
-        displayImage(file);
-        fileInput.value = '';
+        if (event.dataTransfer.files.length > 0) {
+            addImages(event.dataTransfer.files);
+        }
     });
 
     window.addEventListener('beforeunload', () => {
-        if (currentImageUrl) {
-            URL.revokeObjectURL(currentImageUrl);
-        }
+        selectedImages.forEach(image => URL.revokeObjectURL(image.url));
     });
 });
-"""
-
-path = Path("/mnt/data/staticJ.js")
-path.write_text(js, encoding="utf-8")
-print(f"Arquivo criado: {path}")

@@ -27,14 +27,15 @@
             </div>
 
             <div class="upload-container" id="drop-zone">
-                <input type="file" id="image-input" accept="image/png, image/jpeg, image/jpg" hidden>
+                <input type="file" id="image-input" accept="image/png, image/jpeg, image/jpg" multiple hidden>
                 <p id="file-error" class="error-message" hidden>
-                    Invalid file format. Please upload an image in PNG, JPG or JPEG.
+                    Please select 10 images or fewer. You can upload a maximum of 10 images at a time. // 
+                    Invalid file format. Please upload an image in PNG, JPG or JPEG. 
                 </p>
 
                 <div class="upload-content" id="upload-content">
                     <button type="button" class="browse-button" id="browse-button">Browse files</button>
-                    <span class="upload-formats">Supported formats: JPG, JPEG and PNG</span>
+                    <span class="upload-formats">Supported formats: JPG, JPEG and PNG (Maximum 10 images)</span>
                 </div>
 
                 <div class="image-preview" id="image-preview" hidden>
