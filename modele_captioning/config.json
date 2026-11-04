@@ -1,1 +1,1 @@
-{"embedding_dim": 256, "glove_dim": 100, "units": 512, "vocab_size": 4658, "max_length": 25}
+{"embedding_dim": 256, "glove_dim": 100, "units": 512, "vocab_size": 8467, "max_length": 25}
