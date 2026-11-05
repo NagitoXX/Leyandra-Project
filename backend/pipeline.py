@@ -73,9 +73,9 @@ class Pipeline:
         self.tokenizer = tf.keras.preprocessing.text.tokenizer_from_json(
             (CAPTIONING_DIR / "tokenizer.json").read_text(encoding="utf-8"))
         self.max_length = cfg["max_length"]
-        self.start_id = self.tokenizer.word_index["<​start>"]
-        self.end_id = self.tokenizer.word_index["<​end>"]
-        self.unk_id = self.tokenizer.word_index.get("<​unk>", 1)
+        self.start_id = self.tokenizer.word_index["<start>"]
+        self.end_id = self.tokenizer.word_index["<end>"]
+        self.unk_id = self.tokenizer.word_index.get("<unk>", 1)
 
         # Encoder and decoder rebuilt with the same classes as the training, then the saved weights are loaded.
         # The GloVe matrix was only the starting point of the training, so zeros are enough here.
@@ -156,8 +156,8 @@ class Pipeline:
         ranked = sorted(finished if finished else beams, key=score, reverse=True)
         captions = []
         for tokens, _ in ranked:
-            words = [self.tokenizer.index_word.get(t, "<​unk>") for t in tokens[1:]]
-            text = " ".join(w for w in words if w not in ("<​start>", "<​end>"))
+            words = [self.tokenizer.index_word.get(t, "<unk>") for t in tokens[1:]]
+            text = " ".join(w for w in words if w not in ("<start>", "<end>"))
             if text and text not in captions:
                 captions.append(text)
             if len(captions) == N_CAPTIONS:
