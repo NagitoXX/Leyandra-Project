@@ -9,9 +9,16 @@ Same steps as section 7 of Livrable3_Captioning.ipynb, with three changes for be
 import base64
 import io
 import json
+import os
 import sys
 import threading
+import time
 from pathlib import Path
+
+# On the GPU, TensorFlow tries several methods for every new image size to pick the fastest one,
+# which adds 1 to 3 s the first time a size is seen. Our photos all have different sizes, so we turn it off.
+# Must be set before TensorFlow is imported; it changes nothing on the CPU.
+os.environ.setdefault("TF_CUDNN_USE_AUTOTUNE", "0")
 
 import numpy as np
 import tensorflow as tf
@@ -89,11 +96,19 @@ class Pipeline:
         # One image at a time goes through the models
         self.lock = threading.Lock()
 
+    def warm_up(self):
+        # The first image is slow (the models prepare their computations), so a dummy photo goes through
+        # the whole pipeline when the server starts: denoising and caption included, so every model is ready.
+        start = time.perf_counter()
+        x = np.linspace(0, 255, 320 * 240 * 3, dtype=np.float32).reshape(240, 320, 3)
+        self.process(Image.fromarray(x.astype(np.uint8)), denoise="always", force=True)
+        return time.perf_counter() - start
+
     def photo_probability(self, image):
-        # Step 1: 180x180 image (same resize as load_img in the notebook), probability of the class "photo"
-        small = image.resize((CLASSIFIER_SIZE, CLASSIFIER_SIZE), Image.NEAREST)
-        x = np.asarray(small, dtype=np.float32)[None]
-        probs = tf.nn.softmax(self.classifier(x, training=False)[0]).numpy()
+        # Step 1: 180x180 image, resized like during the training (image_dataset_from_directory: bilinear),
+        # then the probability of the class "photo"
+        x = tf.image.resize(np.asarray(image, dtype=np.float32), (CLASSIFIER_SIZE, CLASSIFIER_SIZE), method="bilinear")
+        probs = tf.nn.softmax(self.classifier(x[None], training=False)[0]).numpy()
         return float(probs[1])
 
     def denoise(self, x):
@@ -148,7 +163,7 @@ class Pipeline:
                     parents.append(b)
                 if len(beams) == BEAM_WIDTH:
                     break
-            if not beams:                          # every sentence has reached <end>
+            if not beams:                    # every sentence has reached <end>
                 break
             hidden = tf.gather(new_hidden, parents)   # each sentence keeps the GRU state of its parent
 
@@ -164,14 +179,16 @@ class Pipeline:
                 break
         return captions
 
-    def process(self, image, denoise="auto"):
-        # The whole pipeline on one RGB image. denoise="auto": only noisy photos, "always": every photo
+    def process(self, image, denoise="auto", force=False):
+        # The whole pipeline on one RGB image. denoise="auto": only noisy photos, "always": every photo.
+        # force=True: the user says it is a photo, so it is captioned even if the classifier disagrees
         with self.lock:
             p_photo = self.photo_probability(image)
-            if p_photo <= PHOTO_THRESHOLD:
+            if p_photo <= PHOTO_THRESHOLD and not force:
                 # Not a photo: set aside, no denoising and no caption
-                return {"is_photo": False, "photo_probability": p_photo, "noise_level": None, "denoised": False,
-                        "caption": None, "alternatives": [], "denoised_image": None}
+                return {"is_photo": False, "photo_probability": p_photo, "forced": False, "noise_level": None,
+                        "denoised": False, "caption": None, "alternatives": [], "denoised_image": None}
+            forced = p_photo <= PHOTO_THRESHOLD
 
             photo = image.copy()
             photo.thumbnail((MAX_SIDE, MAX_SIDE))
@@ -185,6 +202,6 @@ class Pipeline:
             # Step 3: caption of the photo actually kept (denoised or not)
             captions = self.beam_search(self.encode_image(photo))
 
-        return {"is_photo": True, "photo_probability": p_photo, "noise_level": sigma, "denoised": denoised,
+        return {"is_photo": True, "photo_probability": p_photo, "forced": forced, "noise_level": sigma, "denoised": denoised,
                 "caption": captions[0] if captions else "", "alternatives": captions[1:],
                 "denoised_image": to_base64_jpeg(photo) if denoised else None}

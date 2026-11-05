@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Leyenda - AI-powered image classification, denoising and captioning.">
+    <title>Leyenda | AI Image Processing</title>
+    <!-- Tab icon, written in the page so the browser does not ask the server for favicon.ico -->
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%233478D4'/%3E%3Crect x='14' y='22' width='36' height='26' rx='5' fill='white'/%3E%3Crect x='25' y='16' width='14' height='8' rx='2' fill='white'/%3E%3Ccircle cx='32' cy='35' r='7' fill='%233478D4'/%3E%3C/svg%3E">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="staticC.css">
+</head>
+<body>
+    <main id="home">
+        <section class="hero">
+            <h1>Project Data Science</h1>
+            <p class="hero-description">Team: Haytam El hilali / Felipe Lobos / Fernanda Gentil.</p>
+            <p class="backend-status" id="backend-status">Checking the backend…</p>
+        </section>
+
+        <section class="workspace" id="upload-section">
+            <div class="section-heading">
+                <span class="step-label">STEP 01</span>
+                <h2>Upload your images</h2>
+                <p>Choose up to 10 images. Each one is classified, denoised if it is a noisy photo, then captioned.</p>
+            </div>
+
+            <div class="upload-container" id="drop-zone">
+                <input type="file" id="image-input" accept="image/png, image/jpeg" multiple hidden>
+                <p id="file-error" class="error-message" role="alert" hidden></p>
+
+                <div class="upload-content" id="upload-content">
+                    <button type="button" class="browse-button" id="browse-button">Browse files</button>
+                    <span class="upload-formats">or drop them here · JPG, JPEG and PNG · 10 images and 10 MB per image at most</span>
+                </div>
+
+                <div class="image-preview" id="image-preview" hidden></div>
+            </div>
+
+            <div class="upload-actions" id="upload-actions" hidden>
+                <div class="denoise-row">
+                    <span class="denoise-label">Denoising</span>
+                    <div class="segmented" id="denoise-switch" role="group" aria-label="Denoising mode">
+                        <button type="button" data-value="auto" class="active">Auto</button>
+                        <button type="button" data-value="always">Always</button>
+                    </div>
+                    <span class="denoise-help" id="denoise-help"></span>
+                </div>
+                <div class="action-buttons">
+                    <button type="button" class="process-button" id="process-button">Caption images</button>
+                    <button type="button" class="clear-button" id="clear-button">Remove all</button>
+                </div>
+            </div>
+        </section>
+
+        <section class="workspace" id="results-section" hidden>
+            <div class="section-heading">
+                <span class="step-label">STEP 02</span>
+                <h2>Results</h2>
+                <p>Classification, denoising and caption for each image.</p>
+                <p class="progress" id="progress" aria-live="polite"></p>
+                <div class="progress-track" hidden><div class="progress-bar" id="progress-bar"></div></div>
+                <div class="summary-row">
+                    <p class="summary" id="summary" hidden></p>
+                    <button type="button" class="clear-button" id="download-button" hidden>
+                        <i class="fa-solid fa-download"></i> Download results (CSV)
+                    </button>
+                </div>
+            </div>
+            <div class="results-grid" id="results-grid"></div>
+        </section>
+
+        <section class="workflow-section" id="workflow">
+            <div class="workflow-heading">
+                <h2>About Leyenda</h2>
+                <p>Explore the three main deliverables of our Data Science project.</p>
+            </div>
+
+            <div class="workflow-grid">
+                <article class="workflow-card">
+                    <span class="workflow-number">01</span>
+                    <div class="workflow-icon">
+                        <i class="fa-solid fa-image"></i>
+                    </div>
+                    <h3>Binary Classification</h3>
+                    <p>Distinguish photographs from non-photographic images, such as diagrams, drawings and scanned documents, with a convolutional neural network.</p>
+                </article>
+
+                <article class="workflow-card">
+                    <span class="workflow-number">02</span>
+                    <div class="workflow-icon">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i>
+                    </div>
+                    <h3>Image Denoising</h3>
+                    <p>Measure the noise of each photo and, only if it is noisy, remove it with a U-Net, a convolutional auto-encoder with skip connections that keeps the details.</p>
+                </article>
+
+                <article class="workflow-card">
+                    <span class="workflow-number">03</span>
+                    <div class="workflow-icon">
+                        <i class="fa-solid fa-comment-dots"></i>
+                    </div>
+                    <h3>Image Captioning</h3>
+                    <p>Generate a natural-language description of each photo: InceptionV3 features, attention and a GRU decoder trained on MS COCO.</p>
+                </article>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-container">
+            <a href="#home" class="logo footer-logo">
+                <span class="logo-icon">
+                    <i class="fa-solid fa-camera"></i>
+                </span>
+                <span class="logo-name">CESI Lille</span>
+            </a>
+            <p>Professor: SADEGHIAN BROUJENY Roozbeh and MHABHBI Nizar.</p>
+            <span class="copyright">Academic Project. <span id="server-info"></span></span>
+        </div>
+    </footer>
+
+    <script src="staticJ.js"></script>
+</body>
+</html>
