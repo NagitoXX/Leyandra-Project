@@ -6,7 +6,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const imagePreview = document.getElementById('image-preview');
     const removeButton = document.getElementById('remove-image-button');
     const fileError = document.getElementById('file-error');
-
+    const processButton = document.getElementById('process-button');
+    const resultsSection = document.getElementById('results-section');
+    const resultsGrid = document.getElementById('results-grid');
+    const API_URL = 'http://127.0.0.1:8000/caption';
     const allowedTypes = ['image/jpeg', 'image/png'];
     const allowedExtensions = ['jpg', 'jpeg', 'png'];
     const maxImages = 10;
@@ -76,7 +79,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function renderImages() {
         imagePreview.innerHTML = '';
-
+        if (processButton) {
+            processButton.hidden = selectedImages.length === 0;
+        }
         if (selectedImages.length === 0) {
             imagePreview.hidden = true;
             uploadContent.hidden = false;
@@ -214,4 +219,57 @@ grid.appendChild(addMoreButton);
     window.addEventListener('beforeunload', () => {
         selectedImages.forEach(image => URL.revokeObjectURL(image.url));
     });
+    async function processImages() {
+        processButton.disabled = true;
+        resultsSection.hidden = false;
+        resultsGrid.innerHTML = '';
+
+        for (const image of selectedImages) {
+            const card = document.createElement('div');
+            card.className = 'result-card';
+            card.textContent = `Processing ${image.file.name}...`;
+            resultsGrid.appendChild(card);
+
+            const formData = new FormData();
+            formData.append('file', image.file);
+
+            try {
+                const response = await fetch(`${API_URL}?denoise=auto`, {
+                    method: 'POST',
+                    body: formData
+                });
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                renderResult(card, image, await response.json());
+            } catch (error) {
+                card.textContent = `Error with ${image.file.name}: ${error.message}. Is the backend running?`;
+            }
+        }
+
+        processButton.disabled = false;
+    }
+
+    function renderResult(card, image, result) {
+        card.innerHTML = '';
+
+        const img = document.createElement('img');
+        img.src = result.denoised_image
+            ? `data:image/jpeg;base64,${result.denoised_image}`
+            : image.url;
+        img.alt = `Result for ${image.file.name}`;
+
+        const info = document.createElement('div');
+        info.className = 'result-info';
+        info.innerHTML =
+            `<strong>${image.file.name}</strong>` +
+            `<p>Photo: ${result.is_photo ? 'yes' : 'no'} (${(result.photo_probability * 100).toFixed(1)}%)</p>` +
+            `<p>Noise: ${result.noise_level.toFixed(4)} — denoised: ${result.denoised ? 'yes' : 'no'}</p>` +
+            `<p>Caption: ${result.caption ?? '—'}</p>` +
+            `<p>Alternatives: ${(result.alternatives || []).join(' / ') || '—'}</p>`;
+
+        card.append(img, info);
+    }
+
+    if (processButton) {
+        processButton.addEventListener('click', processImages);
+    }
 });
