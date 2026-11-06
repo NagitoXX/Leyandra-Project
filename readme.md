@@ -1,4 +1,4 @@
-# Projet Leyenda: automatic captioning of archive photos
+# Project Leyenda: automatic captioning of archive photos
 
 A school project (CESI, Data Science) for **TouNum**, a company that digitizes paper archives. Their scans mix photos with text pages, drawings, paintings and diagrams, and the photos are often noisy. The goal: **find the photos, clean them, and write a caption for each one**, automatically.
 
